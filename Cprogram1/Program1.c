@@ -4,11 +4,11 @@
 
 #define MONTHS 12
 
-float *min(float *a, float *b) {
+float *min(float *a, float *b) {    //Minimum function that takes and returns pointers
     return (*a < *b) ? a:b;
 }
 
-float *max(float *a, float *b) {
+float *max(float *a, float *b) {    //Maximum function that takes and returns pointers
     return (*a > *b) ? a:b;
 }
 
@@ -19,10 +19,10 @@ float *read_data_from(char *filename) {
     for (int i=0; i<MONTHS; i++) {
         fscanf(fp, "%f\n", &month_sales_data[i]);
     }
-    return month_sales_data;
+    return month_sales_data;        //Returns sales
 }
 
-float *average(const float *sales, int num_months) {
+float *average(const float *sales, int num_months) {    //Average function for sales
     float *value = (float*)malloc(sizeof(float));
     *value = 0;
     for (int i=0; i<num_months; i++) {
@@ -32,7 +32,7 @@ float *average(const float *sales, int num_months) {
     return value;
 }
 
-float *minimum(const float *sales) {
+float *minimum(const float *sales) {        //Minimum function for sales
     float *value = &sales[0];
     for (int i=1; i<MONTHS; i++) {
         value = min(value, &sales[i]);
@@ -40,7 +40,7 @@ float *minimum(const float *sales) {
     return value;
 }
 
-float *maximum(const float *sales) {
+float *maximum(const float *sales) {        //Maximum function for sales
     float *value = &sales[0];
     for (int i=1; i<MONTHS; i++) {
         value = max(value, &sales[i]);
@@ -69,64 +69,34 @@ void print_data(const char *months[], const float *sales, const float *min, cons
     printf("Average sales:  $%10f\n", *ave);
 
     printf("\nSix-Month Moving Average\n");
-    for (int i=0; i<6; i++) {
-        printf("%-12s - %-12s $%10f\n", months[i], months[i+6], *average(&*(sales+i), 6));
+    for (int i=0; i<=6; i++) {
+        printf("%-12s - %-12s $%10f\n", months[i], months[i+5], *average(&*(sales+i), 6));
     }
 
     
-    /*printf("\nSales Report (Highest to Lowest):\n");
-    printf("%-12s %-10s\n", "Month", "Sales");
-    char *month;
-    for (int i=0; i<MONTHS; i++) {
-        //float *value = max(sales);
-        printf("%-12s $%10f\n", month, *value);
-        *value = 0;
-    }*/
-}
-
-void print_highest_to_lowest(const char *months[], const float *sales) {
-    char *months_copy[MONTHS];
-    for(int i = 0; i < MONTHS; ++i) {
-        char *month = (char*)malloc(sizeof(months[i]));
-        strcpy(month, months[i]);
-        months_copy[i] = month;
-    }
-
-    
-    float *sales_copy = (float*)malloc(sizeof(float)*MONTHS);
-    for(int i = 0; i < MONTHS; ++i) {
-        sales_copy[i] = sales[i];
-    }
-
     printf("\nSales Report (Highest to Lowest):\n");
     printf("%-12s %-10s\n", "Month", "Sales");
     char *month;
     float *value;
     for (int i=0; i<MONTHS; i++) {
-        value = maximum(sales_copy);
+        value = maximum(sales);         //Finds the maximum value
         for (int i=0; i<MONTHS; i++) {
-            if (*value == sales_copy[i]) {
+            if (*value == sales[i]) {   //Gets the correct Month
                 month = months[i];
             }
         }
         printf("%-12s $%10f\n", month, *value);
-        *value = 0;
+        *value = 0;             //Final use of sales in the program so it can be modified
     }
-
-    // for(int i = 0; i < MONTHS; ++i) {
-    //     printf("%s %f\n", months_copy[i], sales_copy[i]);
-    // }
 }
 
 int main() {
     float *sales = read_data_from("Cprogram1/data.txt");
     const char *months[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-    /*float *ave = average(sales, MONTHS);
+    float *ave = average(sales, MONTHS);
     float *min = minimum(sales);
     float *max = maximum(sales);
     
-    print_data(months, sales, min, max, ave);*/
-
-    print_highest_to_lowest(months, sales);
+    print_data(months, sales, min, max, ave);
     return 0;
 }
