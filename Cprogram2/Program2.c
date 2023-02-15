@@ -1,45 +1,48 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 void rec_score(int score, int scores[5], int **output) {
-    printf("%d %d %d %d %d\n", scores[0], scores[1], scores[2], scores[3], scores[4]);
     if (score == 0) {
         for (int i=0; i<500; i++) {
-            //printf("%d  ", output[i]);
             if (output[i] == NULL) {
-                printf("output at index %d is NULL\n", i);
-                int final_score[] = {scores[0], scores[1], scores[2], scores[3], scores[4]};
+                int *final_score = (int*)malloc(sizeof(int) * 5);
+                *final_score = scores[0];
+                *(final_score+1) = scores[1];
+                *(final_score+2) = scores[2];
+                *(final_score+3) = scores[3];
+                *(final_score+4) = scores[4];
                 output[i] = final_score;
                 break;
-            } else if (scores[1] == output[i][1] &&
+            } else if (scores[0] == output[i][0] &&
+                       scores[1] == output[i][1] &&
                        scores[2] == output[i][2] &&
                        scores[3] == output[i][3] &&
-                       scores[4] == output[i][4] &&
-                       scores[5] == output[i][5]) {
+                       scores[4] == output[i][4]) {
                             break;
             }
         }
     }
-    if (score >= 8) {
+    if (score >= 8) {   //TD+2pt
         scores[0]++;
         rec_score(score-8, scores, output);
         scores[0]--;
     }
-    if (score >= 7) {
+    if (score >= 7) {   //TD+FG
         scores[1]++;
         rec_score(score-7, scores, output);
         scores[1]--;
     }
-    if (score >= 6) {
+    if (score >= 6) {   //TD
         scores[2]++;
         rec_score(score-6, scores, output);
         scores[2]--;
     }
-    if (score >= 3) {
+    if (score >= 3) {   //FG
         scores[3]++;
         rec_score(score-3, scores, output);
         scores[3]--;
     }
-    if (score >= 2) {
+    if (score >= 2) {   //SFT
         scores[4]++;
         rec_score(score-2, scores, output);
         scores[4]--;
@@ -48,7 +51,6 @@ void rec_score(int score, int scores[5], int **output) {
 }
 
 void score(int score) {
-    printf("scores was called\n");
     int scores[] = {0, 0, 0, 0, 0};  //{TD+2, TD+1, TD, FD, SFT}
     int *output[500];
 
