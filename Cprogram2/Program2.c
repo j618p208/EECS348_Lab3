@@ -50,6 +50,39 @@ void rec_score(int score, int scores[5], int **output) {
     return;
 }
 
+void rec_score2(int score, int scores[5]) {
+    if (score == 0) {
+         printf("%d TD+2pt, %d TD+FD, %d TD, %d FG, %d SAFETY\n",
+            scores[0], scores[1], scores[2], scores[3], scores[4]);
+    }
+    if (score >= 2 && !(scores[3] > 0 || scores[2] > 0 || scores[1] > 0 || scores[0] > 0)) {   //SFT
+        scores[4]++;
+        rec_score2(score-2, scores);
+        scores[4]--;
+    }
+    if (score >= 3 && !(scores[2] > 0 || scores[1] > 0 || scores[0] > 0)) {   //FG
+        scores[3]++;
+        rec_score2(score-3, scores);
+        scores[3]--;
+    }
+    if (score >= 6 && !(scores[1] > 0 || scores[0] > 0)) {   //TD
+        scores[2]++;
+        rec_score2(score-6, scores);
+        scores[2]--;
+    }
+    if (score >= 7 && !(scores[0] > 0)) {   //TD+FG
+        scores[1]++;
+        rec_score2(score-7, scores);
+        scores[1]--;
+    }
+    if (score >= 8) {   //TD+2pt
+        scores[0]++;
+        rec_score2(score-8, scores);
+        scores[0]--;
+    }
+    return;
+}
+
 void score(int score) {
     int scores[] = {0, 0, 0, 0, 0};  //{TD+2, TD+1, TD, FD, SFT}
     int *output[500];
@@ -58,18 +91,20 @@ void score(int score) {
         output[i] = NULL;
     }
 
-    rec_score(score, scores, output);
+    rec_score2(score, scores);
 
-    printf("\n");
+    // rec_score(score, scores, output);
 
-    for (int i=0; i<500; i++) {
-        if (output[i] == NULL) {
-            break;
-        } else {
-            printf("%d TD+2pt, %d TD+FD, %d TD, %d FG, %d SAFETY\n",
-            output[i][0], output[i][1], output[i][2], output[i][3], output[i][4]);
-        }
-    }
+    // printf("\n");
+
+    // for (int i=499; i>0; i--) {
+    //     if (output[i] == NULL) {
+    //         continue;
+    //     } else {
+    //         printf("%d TD+2pt, %d TD+FD, %d TD, %d FG, %d SAFETY\n",
+    //         output[i][0], output[i][1], output[i][2], output[i][3], output[i][4]);
+    //     }
+    // }
     return;
 }
 
